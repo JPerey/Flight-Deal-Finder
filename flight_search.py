@@ -14,23 +14,34 @@ class FlightSearch:
         pass
 
     def get_data_tequila(self, user_location, user_date_frm, user_date_to):
+        search_list = []
         headers = {
             "apikey": os.environ.get("apikey"),
-            # "accept": "application/json", <- wasnt sure if this was needed so been toggling on/off
         }
 
         for flight in self.data_frm_wksht:
-            print(f"inside flight for loop: {flight}")
             flight_search_params = {
                 "fly_from": user_location,
-                "fly_to": "HND",
+                "fly_to": flight["iataCode"],
                 "price_to": flight["lowestPrice"],
                 "date_from": user_date_frm,
                 "date_to": user_date_to,
+                "curr": "USD",
+                "partner_market": "us"
             }
-            print(flight['lowestPrice'])
 
-            tequila_search_response = requests.get(url=self.tequila_endpoint, params=flight_search_params,
-                                                   headers=headers)
-            tequila_search_response.raise_for_status()
-            print(f"tequila searchs: {tequila_search_response.text}")
+            try:
+                tequila_search_response = requests.get(url=self.tequila_endpoint, params=flight_search_params,
+                                                       headers=headers)
+                tequila_search_response.raise_for_status()
+                tequila_search_response_json = tequila_search_response.json()
+                # print(f"{tequila_search_response.json()}")
+                search_list.append(tequila_search_response_json)
+                print("------------------------------------------------------------------------------------------------"
+                      "---------------------------------ADDED ONE---------ADDED ONE------------------------------------"
+                      "-----------------------------------------------------------------------------------------------")
+
+            except requests.exceptions.HTTPError as e:
+                print(e)
+        return search_list
+

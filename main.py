@@ -3,6 +3,7 @@
 # classes to achieve the program requirements.
 from data_manager import DataManager
 from flight_search import FlightSearch
+from flight_data import FlightData
 from tkinter import *
 
 window = Tk()
@@ -19,6 +20,12 @@ user_location = input("Please input current location(via IATA Code): ").upper()
 user_date_frm = input("Please input beginning vacation date in DD/MM/YYYY: ")
 user_date_to = input("Please input ending vacation date in DD/MM/YYYY: ")
 
-flight_search.get_data_tequila(user_location, user_date_frm, user_date_to)
+flight_search_data = flight_search.get_data_tequila(user_location, user_date_frm, user_date_to)
+# print(flight_search_data)
+print(flight_search_data[1])
+
+flight_data = FlightData(flight_search_data)
+flight_data.eval_data()
+
 
 window.mainloop()
